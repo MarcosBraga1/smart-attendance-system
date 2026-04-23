@@ -5,15 +5,20 @@ from src.interfaces.api.serializers.auth.register_serializer import RegisterSeri
 from src.application.use_cases.register_user import RegisterUserUseCase
 from src.application.exceptions import AlreadyExistsException
 from src.infrastructure.db.repositories.user_repository_impl import DjangoUserRepository
+from src.infrastructure.db.repositories.student_repository_impl import DjangoStudentRespository
+from src.infrastructure.db.repositories.professor_repository_impl import DjangoProfessorRepository
 from src.infrastructure.auth.hash_service_impl import BcryptHashService
 
 class RegisterView(APIView):
+    
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         
         use_case = RegisterUserUseCase(
             user_repo=DjangoUserRepository(),
+            student_repo=DjangoStudentRespository(),
+            professor_repo=DjangoProfessorRepository(),
             hash_service=BcryptHashService()
         )
         

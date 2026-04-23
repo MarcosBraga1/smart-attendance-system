@@ -1,4 +1,5 @@
 class HashService:
+    
     def hash(self, value: str) -> str:
         pass
     
