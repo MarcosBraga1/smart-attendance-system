@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from .views.auth.register_view import RegisterView
 from .views.auth.login_view import LoginView
 from .views.protected_view import ProtectedView
@@ -6,5 +6,6 @@ from .views.protected_view import ProtectedView
 urlpatterns = [
     path('register/', RegisterView.as_view()),
     path('login/', LoginView.as_view()),
-    path('protected/', ProtectedView.as_view())
+    path('protected/', ProtectedView.as_view()),
+    path('', include('src.interfaces.api.views.student.urls')),
 ]

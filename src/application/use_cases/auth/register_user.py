@@ -34,6 +34,7 @@ class RegisterUserUseCase:
                 registration = data["registration"],
                 course = data["course"]
             )
+            
             self.student_repo.save(student)
         
         elif user.role == "professor":
@@ -41,6 +42,7 @@ class RegisterUserUseCase:
                 user = saved_user,
                 department = data["department"]
             )
+            
             self.professor_repo.save(professor)
         
         return {"message": "User created"}

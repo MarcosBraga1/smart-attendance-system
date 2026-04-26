@@ -7,3 +7,9 @@ class AlreadyExistsException(APIException):
 class InvalidCredentialsException(APIException):
     status_code = 401
     default_detail = "Invalid credentials"
+    
+class NotFoundException(Exception):
+    pass
+    
+class PermissionDeniedException(Exception):
+    pass

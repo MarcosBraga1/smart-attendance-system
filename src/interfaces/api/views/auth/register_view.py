@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from src.interfaces.api.serializers.auth.register_serializer import RegisterSerializer
-from src.application.use_cases.register_user import RegisterUserUseCase
+from src.application.use_cases.auth.register_user import RegisterUserUseCase
 from src.application.exceptions import AlreadyExistsException
 from src.infrastructure.db.repositories.user_repository_impl import DjangoUserRepository
 from src.infrastructure.db.repositories.student_repository_impl import DjangoStudentRespository
@@ -24,7 +24,7 @@ class RegisterView(APIView):
         
         try:
             
-            result = use_case.execute(serializer.validated_data)
+            result = use_case.execute(data=serializer.validated_data)
             return Response(result, status=status.HTTP_201_CREATED)
         
         except AlreadyExistsException as e:
