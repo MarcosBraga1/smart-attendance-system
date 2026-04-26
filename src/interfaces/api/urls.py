@@ -8,4 +8,5 @@ urlpatterns = [
     path('login/', LoginView.as_view()),
     path('protected/', ProtectedView.as_view()),
     path('', include('src.interfaces.api.views.student.urls')),
+    path('', include('src.interfaces.api.views.professor.urls')),
 ]

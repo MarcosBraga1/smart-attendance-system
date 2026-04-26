@@ -18,6 +18,6 @@ class UpdateStudentUseCase:
         if "course" in data:
             student.course = data["course"]
         
-        updated_user = self.student_repo.update(student)
+        updated_student = self.student_repo.update(student)
         
-        return updated_user
+        return updated_student

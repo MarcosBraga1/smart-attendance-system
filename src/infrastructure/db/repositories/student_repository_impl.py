@@ -45,15 +45,6 @@ class DjangoStudentRespository(StudentRepository):
         except StudentProfile.DoesNotExist:
             raise NotFoundException()
     
-    def get_by_user_id(self, user_id):
-        try:
-            
-            student = StudentProfile.objects.select_related("user").get(user_id=user_id)
-            return self._to_entity(student)
-        
-        except StudentProfile.DoesNotExist:
-            return None
-    
     def get_all(self):
         students = StudentProfile.objects.select_related("user").all()
         return [self._to_entity(s) for s in students]

@@ -1,5 +1,5 @@
 from django.db import transaction
-from src.application.exceptions import NotFoundException, PermissionDeniedException
+from src.application.exceptions import PermissionDeniedException
 
 class DeleteStudentUseCase:
     
