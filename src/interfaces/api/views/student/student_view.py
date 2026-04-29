@@ -33,7 +33,10 @@ class StudentViewSet(ViewSet):
         try:
             
             result = use_case.execute(data=serializer.validated_data)
-            return Response(result, status=status.HTTP_201_CREATED)
+            
+            serializer = StudentResponseSerializer(result)
+            
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         
         except AlreadyExistsException as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

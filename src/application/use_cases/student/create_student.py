@@ -32,6 +32,6 @@ class CreateUserUseCase:
             course = data["course"]
         )
         
-        self.student_repo.save(student)
+        saved_student = self.student_repo.save(student)
         
-        return {"message": "Student created"}
+        return saved_student

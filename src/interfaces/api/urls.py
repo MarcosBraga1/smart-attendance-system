@@ -9,4 +9,5 @@ urlpatterns = [
     path('protected/', ProtectedView.as_view()),
     path('', include('src.interfaces.api.views.student.urls')),
     path('', include('src.interfaces.api.views.professor.urls')),
+    path('', include('src.interfaces.api.views.discipline.urls')),
 ]

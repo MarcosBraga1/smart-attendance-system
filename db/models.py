@@ -35,7 +35,7 @@ class ProfessorProfile(models.Model):
 class Discipline(models.Model):
     
     name = models.CharField(max_length=255)
-    code = models.CharField(max_length=50, unique=True)
+    code = models.CharField(max_length=50)
     semester = models.CharField(max_length=20)
     
     professor = models.ForeignKey(

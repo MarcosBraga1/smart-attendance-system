@@ -31,6 +31,6 @@ class CreateProfessorUseCase:
             department= data["department"]
         )
         
-        self.professor_repo.save(professor)
+        saved_professor = self.professor_repo.save(professor)
         
-        return {"message": "Professor created"}
+        return saved_professor

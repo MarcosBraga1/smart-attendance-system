@@ -15,10 +15,12 @@ class DjangoProfessorRepository(ProfessorRepository):
             raise NotFoundException()
     
     def save(self, professor):
-        ProfessorProfile.objects.create(
+        obj = ProfessorProfile.objects.create(
             user=professor.user,
             department=professor.department
         )
+        
+        self._to_entity(obj)
         
     def update(self, professor):
         try:

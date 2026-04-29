@@ -15,11 +15,13 @@ class DjangoStudentRespository(StudentRepository):
             raise NotFoundException()
     
     def save(self, student):
-        StudentProfile.objects.create(
+        obj = StudentProfile.objects.create(
             user=student.user,
             registration=student.registration,
             course=student.course
         )
+        
+        return self._to_entity(obj)
         
     def update(self, student):
         try:

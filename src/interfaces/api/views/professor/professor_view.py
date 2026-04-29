@@ -33,7 +33,10 @@ class ProfessorViewSet(ViewSet):
         try:
             
             result = use_case.execute(data=serializer.validated_data)
-            return Response(result, status=status.HTTP_201_CREATED)
+            
+            serializer = ProfessorResponseSerializer(result)
+            
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         
         except AlreadyExistsException as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -43,7 +46,7 @@ class ProfessorViewSet(ViewSet):
             professor_repo=DjangoProfessorRepository()
         )
         
-        professors = use_case.execute(user=request.user)
+        professors = use_case.execute()
         
         serializer = ProfessorResponseSerializer(professors, many=True)
         

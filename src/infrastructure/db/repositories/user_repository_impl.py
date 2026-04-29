@@ -12,7 +12,8 @@ class DjangoUserRepository(UserRepository):
             name=user.name,
             role=user.role
         )
-        return obj
+        
+        return self._to_entity(obj)
         
     def exists_by_email(self, email):
         return UserModel.objects.filter(email=email).exists()
