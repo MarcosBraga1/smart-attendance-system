@@ -72,7 +72,12 @@ class ClassSession(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
     
+    is_active = models.BooleanField(default=True)
+    
     qr_token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    
+    class Meta:
+        unique_together = ('room', 'date', 'start_time')
     
 class Attendance(models.Model):
     
