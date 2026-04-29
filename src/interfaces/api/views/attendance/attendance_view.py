@@ -2,39 +2,39 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-from src.interfaces.api.permissions.is_professor_or_admin import IsProfessorOrAdmin
-from src.interfaces.api.serializers.class_session.class_session_response_serializer import ClassSessionResponseSerializer
-from src.interfaces.api.serializers.class_session.create_class_session_serializer import CreateClassSessionSerializer
-from src.interfaces.api.serializers.class_session.update_class_session_serializer import UpdateClassSessionSerializer
-from src.application.use_cases.class_session.create_class_session import CreateClassSessionUseCase
-from src.application.use_cases.class_session.delete_class_session import DeleteClassSessionUseCase
-from src.application.use_cases.class_session.get_class_session import GetClassSessionUseCase
-from src.application.use_cases.class_session.list_class_session import ListClassSessionUseCase
-from src.application.use_cases.class_session.update_class_session import UpdateClassSessionUseCase
+from src.interfaces.api.permissions.is_admin import IsAdmin
+from src.interfaces.api.serializers.attendance.attendance_response_serializer import AttendanceResponseSerializer
+from src.interfaces.api.serializers.attendance.create_attendance_serializer import CreateAttendanceSerializer
+from src.interfaces.api.serializers.attendance.update_attendance_serializer import UpdateAttendanceSerializer
+from src.application.use_cases.attendance.create_attendance import CreateAttendanceUseCase
+from src.application.use_cases.attendance.delete_attendance import DeleteAttendanceUseCase
+from src.application.use_cases.attendance.get_attendance import GetAttendanceUseCase
+from src.application.use_cases.attendance.list_attendance import ListAttendanceUseCase
+from src.application.use_cases.attendance.update_attendance import UpdateAttendanceUseCase
 from src.application.exceptions import NotFoundException, PermissionDeniedException
+from src.infrastructure.db.repositories.attendance_repository_impl import DjangoAttendanceRespository
+from src.infrastructure.db.repositories.student_repository_impl import DjangoStudentRespository
 from src.infrastructure.db.repositories.class_session_repository_impl import DjangoClassSessionRepository
-from src.infrastructure.db.repositories.discipline_repository_impl import DjangoDisciplineRepository
-from src.infrastructure.db.repositories.room_repository_impl import DjangoRoomRepository
 
-class ClassSessionViewSet(ViewSet):
+class AttendanceViewSet(ViewSet):
     
-    permission_classes = [IsAuthenticated, IsProfessorOrAdmin]
+    permission_classes = [IsAuthenticated, IsAdmin]
     
     def create(self, request):
-        serializer = CreateClassSessionSerializer(data=request.data)
+        serializer = CreateAttendanceSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         
-        use_case = CreateClassSessionUseCase(
-            class_session_repo=DjangoClassSessionRepository(),
-            discipline_repo=DjangoDisciplineRepository(),
-            room_repo=DjangoRoomRepository()
+        use_case = CreateAttendanceUseCase(
+            attendance_repo=DjangoAttendanceRespository(),
+            student_repo=DjangoStudentRespository(),
+            class_session_repo=DjangoClassSessionRepository()
         )
         
         try:
             
             result = use_case.execute(data=serializer.validated_data)
             
-            serializer = ClassSessionResponseSerializer(result)
+            serializer = AttendanceResponseSerializer(result)
             
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
@@ -43,58 +43,32 @@ class ClassSessionViewSet(ViewSet):
                 {
                     "error": {
                         "code": "404_not_found",
-                        "message": "Discipline or room not found"
-                    }
-                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-    
-    def list(self, request):
-        use_case = ListClassSessionUseCase(
-            class_session_repo=DjangoClassSessionRepository()
-        )
-        
-        class_sessions = use_case.execute()
-        
-        serializer = ClassSessionResponseSerializer(class_sessions, many=True)
-        
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    def retrieve(self, request, pk=None):
-        use_case = GetClassSessionUseCase(
-            class_session_repo=DjangoClassSessionRepository()
-        )
-        
-        try:
-            
-            class_session = use_case.execute(class_session_id=pk)
-            
-            serializer = ClassSessionResponseSerializer(class_session)
-            
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        
-        except NotFoundException:
-            return Response(
-                {
-                    "error": {
-                        "code": "404_not_found",
-                        "message": "Class session not found"
+                        "message": "Student or class session not found"
                     }
                 }, status=status.HTTP_404_NOT_FOUND
             )
     
-    def update(self, request, pk=None):
-        serializer = UpdateClassSessionSerializer(data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
+    def list(self, request):
+        use_case = ListAttendanceUseCase(
+            attendance_repo=DjangoAttendanceRespository()
+        )
         
-        use_case = UpdateClassSessionUseCase(
-            class_session_repo=DjangoClassSessionRepository()
+        attendances = use_case.execute()
+        
+        serializer = AttendanceResponseSerializer(attendances, many=True)
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def retrieve(self, request, pk=None):
+        use_case = GetAttendanceUseCase(
+            attendance_repo=DjangoAttendanceRespository()
         )
         
         try:
             
-            class_session = use_case.execute(class_session_id=pk, data=serializer.validated_data, user=request.user)
+            attendance = use_case.execute(attendance_id=pk)
             
-            serializer = ClassSessionResponseSerializer(class_session)
+            serializer = AttendanceResponseSerializer(attendance)
             
             return Response(serializer.data, status=status.HTTP_200_OK)
         
@@ -103,7 +77,43 @@ class ClassSessionViewSet(ViewSet):
                 {
                     "error": {
                         "code": "404_not_found",
-                        "message": "Class session not found"
+                        "message": "Attendance not found"
+                    }
+                }, status=status.HTTP_404_NOT_FOUND
+            )
+            
+        except PermissionDeniedException:
+            return Response(
+                {
+                    "error": {
+                        "code": "403_forbidden",
+                        "message": "Not allowed"
+                    }
+                }
+            )
+    
+    def update(self, request, pk=None):
+        serializer = UpdateAttendanceSerializer(data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        
+        use_case = UpdateAttendanceUseCase(
+            attendance_repo=DjangoAttendanceRespository()
+        )
+        
+        try:
+            
+            attendance = use_case.execute(attendance_id=pk, data=serializer.validated_data, user=request.user)
+            
+            serializer = AttendanceResponseSerializer(attendance)
+            
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        except NotFoundException:
+            return Response(
+                {
+                    "error": {
+                        "code": "404_not_found",
+                        "message": "Attendance not found"
                     }
                 }, status=status.HTTP_404_NOT_FOUND
             )
@@ -119,13 +129,13 @@ class ClassSessionViewSet(ViewSet):
             )
     
     def destroy(self, request, pk=None):
-        use_case = DeleteClassSessionUseCase(
-            class_session_repo=DjangoClassSessionRepository()
+        use_case = DeleteAttendanceUseCase(
+            attendance_repo=DjangoAttendanceRespository()
         )
         
         try:
             
-            use_case.execute(class_session_id=pk, user=request.user)
+            use_case.execute(attendance_id=pk, user=request.user)
             return Response(status=status.HTTP_204_NO_CONTENT)
         
         except NotFoundException:
@@ -133,7 +143,7 @@ class ClassSessionViewSet(ViewSet):
                 {
                     "error": {
                         "code": "404_not_found",
-                        "message": "Class session not found"
+                        "message": "Attendance not found"
                     }
                 }, status=status.HTTP_404_NOT_FOUND
             )

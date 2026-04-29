@@ -99,7 +99,7 @@ class RoomViewSet(ViewSet):
                 {
                     "error": {
                         "code": "404_not_found",
-                        "message": "Professor not found"
+                        "message": "Room not found"
                     }
                 }, status=status.HTTP_404_NOT_FOUND
             )
@@ -129,7 +129,7 @@ class RoomViewSet(ViewSet):
                 {
                     "error": {
                         "code": "404_not_found",
-                        "message": "Professor not found"
+                        "message": "Room not found"
                     }
                 }, status=status.HTTP_404_NOT_FOUND
             )

@@ -1,4 +1,4 @@
-from src.domain.repositories.class_session import ClassSessionRepository
+from src.domain.repositories.class_session_repository import ClassSessionRepository
 from src.application.exceptions import NotFoundException
 from src.domain.entities.class_session import ClassSessionModel
 from src.domain.entities.room import RoomModel

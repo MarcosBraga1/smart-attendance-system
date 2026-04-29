@@ -12,4 +12,5 @@ urlpatterns = [
     path('', include('src.interfaces.api.views.discipline.urls')),
     path('', include('src.interfaces.api.views.room.urls')),
     path('', include('src.interfaces.api.views.class_session.urls')),
+    path('', include('src.interfaces.api.views.attendance.urls')),
 ]
