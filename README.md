@@ -37,7 +37,7 @@ O projeto foi estruturado seguindo princípios de DDD (Domain-Driven Design) e A
 | --- | --- | --- |
 | `POST` | `/api/register` | Criação de Conta Manual. |
 | `POST` | `/api/login` | Login tradicional retornando JWT Access/Refresh. |
-| `POST` | `api/auth/google` | Login institucional Google (Envia `access_token` do Google). |
+| `POST` | `/api/auth/google` | Login institucional Google (Envia `access_token` do Google). |
 
 ### Gerenciamento (Protegidas - Requer JWT)
 | Endponit | Descrição | Permissões |
@@ -64,6 +64,7 @@ pip install -r requirements.txt
 ```
 
 3. Variáveis de Ambiente
+   
 Renomeie o arquivo `.env.example` para `.env` e preencha com suas credenciais locais.
 ```
 cp .env.example .env
